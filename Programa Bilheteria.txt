@@ -1,0 +1,95 @@
+// Programa Bilheteria
+
+#include <iostream>
+#include <iomanip> // Para formatar o valor monetário (R$)
+
+using namespace std;
+
+int main() {
+    // Configurações do teatro
+    const int FILEIRAS = 15;
+    const int POLTRONAS = 40;
+    
+    // Matriz que representa o teatro (0 para vago, 1 para ocupado)
+    int teatro[FILEIRAS][POLTRONAS];
+    
+    // Inicializando o teatro como vazio
+    for(int i = 0; i < FILEIRAS; i++) {
+        for(int j = 0; j < POLTRONAS; j++) {
+            teatro[i][j] = 0;
+        }
+    }
+
+    int opcao;
+    
+    do {
+        // Menu Principal
+        cout << "\n--- SISTEMA DE BILHETERIA ---" << endl;
+        cout << "0. Finalizar" << endl;
+        cout << "1. Reservar poltrona" << endl;
+        cout << "2. Mapa de ocupacao" << endl;
+        cout << "3. Faturamento" << endl;
+        cout << "Escolha uma opcao: ";
+        cin >> opcao;
+
+        if (opcao == 1) {
+            int f, p;
+            cout << "Informe a fileira (1-15): ";
+            cin >> f;
+            cout << "Informe a poltrona (1-40): ";
+            cin >> p;
+
+            // Validação dos dados (consistência)
+            if (f < 1 || f > 15 || p < 1 || p > 40) {
+                cout << "Erro: Posicao invalida!" << endl;
+            } else {
+                // Ajuste para o índice da matriz (que começa em 0)
+                if (teatro[f-1][p-1] == 0) {
+                    teatro[f-1][p-1] = 1;
+                    cout << "Reserva efetuada com sucesso!" << endl;
+                } else {
+                    cout << "Alerta: Este lugar ja esta ocupado!" << endl;
+                }
+            }
+        } 
+        else if (opcao == 2) {
+            cout << "\nMAPA DE OCUPACAO:" << endl;
+            for (int i = 0; i < FILEIRAS; i++) {
+                cout << "F" << setfill('0') << setw(2) << i + 1 << " "; // Formata a linha
+                for (int j = 0; j < POLTRONAS; j++) {
+                    if (teatro[i][j] == 0) cout << ".";
+                    else cout << "#";
+                }
+                cout << endl;
+            }
+            cout << "Legenda: [.] Vago  [#] Ocupado" << endl;
+        } 
+        else if (opcao == 3) {
+            int totalOcupados = 0;
+            double faturamento = 0.0;
+
+            for (int i = 0; i < FILEIRAS; i++) {
+                for (int j = 0; j < POLTRONAS; j++) {
+                    if (teatro[i][j] == 1) {
+                        totalOcupados++;
+                        
+                        // Cálculo do valor baseado na fileira
+                        if (i < 5) faturamento += 50.00;      // Fileiras 1 a 5
+                        else if (i < 10) faturamento += 30.00; // Fileiras 6 a 10
+                        else faturamento += 15.00;             // Fileiras 11 a 15
+                    }
+                }
+            }
+            
+            cout << fixed << setprecision(2);
+            cout << "\n--- RELATORIO DE FATURAMENTO ---" << endl;
+            cout << "Qtde de lugares ocupados: " << totalOcupados << endl;
+            cout << "Valor da bilheteria:      R$ " << faturamento << endl;
+        }
+
+    } while (opcao != 0);
+
+    cout << "Sistema encerrado." << endl;
+
+    return 0;
+}
